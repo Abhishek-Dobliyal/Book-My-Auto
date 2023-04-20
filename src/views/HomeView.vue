@@ -14,7 +14,7 @@
           <Input label="Pickup Location" placeholder="Enter Pickup Location">
             <button
               class="mt-3 text-sm font-semibold hover:underline hover:decoration-yellow-500 hover:decoration-8"
-              @click="getCoords"
+              @click="getLocation"
             >
               Locate Me
             </button>
@@ -34,8 +34,43 @@
 import Header from "@/components/Header.vue";
 import Image from "@/components/Image.vue";
 import Input from "@/components/Input.vue";
+import axios from "axios";
+import { useStore } from "vuex";
 
-const getCoords = () => {
-  console.log("Hello");
+const store = useStore();
+const apiKey = "e249b38d65ee4291bdee74f98aed42af";
+
+const getLocation = async () => {
+  let url = new URL("https://api.geoapify.com/v1/geocode/reverse?");
+
+  try {
+    let coords = await getCoords();
+    url.searchParams.append("lat", coords.latitude);
+    url.searchParams.append("lon", coords.longitude);
+    url.searchParams.append("apiKey", apiKey);
+
+    let resp = await axios.get(url.toString());
+    let data = await resp.data;
+    let locationJson = data.features[0].properties;
+    let { road, district, country } = locationJson;
+    console.log(road, district, country);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getCoords = async () => {
+  if (navigator.geolocation) {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve(position.coords);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
 };
 </script>
