@@ -6,6 +6,11 @@ export default createStore({
       pickup: "",
       drop: "",
     },
+    dummyStats: {
+      tripsCompletes: 12032134,
+      usersRegistered: 80234,
+      driversRegistered: 56032,
+    },
   },
   getters: {
     getUserLocation(state) {

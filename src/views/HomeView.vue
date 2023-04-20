@@ -11,19 +11,30 @@
           subHeading="No time to try out our app? Use the web version to book your Auto"
         ></Header>
         <div class="container mt-7 space-y-4 relative">
-          <Input label="Pickup Location" placeholder="Enter Pickup Location">
+          <Input
+            label="Pickup Location"
+            placeholder="Enter Pickup Location"
+            for="location-pickup"
+          >
             <button
-              class="mt-3 text-sm font-semibold hover:underline hover:decoration-yellow-500 hover:decoration-8"
+              class="mt-3 text-lg font-semibold hover:underline hover:decoration-yellow-500 hover:decoration-8"
               @click="getLocation"
             >
-              Locate Me
+              <i
+                class="fa-solid fa-location-crosshairs hover:text-yellow-500"
+              ></i>
             </button>
           </Input>
           <Input
             label="Drop Location"
             placeholder="Enter Drop Location"
+            for="location-drop"
           ></Input>
         </div>
+        <Button
+          content="Ride Now"
+          btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black hover:shadow-lg mt-12 text-gray-800"
+        ></Button>
       </div>
       <Image name="bg-auto.png"></Image>
     </div>
@@ -34,6 +45,7 @@
 import Header from "@/components/Header.vue";
 import Image from "@/components/Image.vue";
 import Input from "@/components/Input.vue";
+import Button from "@/components/Button.vue";
 import axios from "axios";
 import { useStore } from "vuex";
 
@@ -52,8 +64,8 @@ const getLocation = async () => {
     let resp = await axios.get(url.toString());
     let data = await resp.data;
     let locationJson = data.features[0].properties;
-    let { road, district, country } = locationJson;
-    console.log(road, district, country);
+    let { road, city, country } = locationJson;
+    store.getters.getUserLocation.pickup = `${road} ${city} ${country}`;
   } catch (err) {
     console.log(err);
   }
