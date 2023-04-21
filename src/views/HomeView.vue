@@ -10,7 +10,7 @@
           headingText2="Web"
           subHeading="No time to try out our app? Use the web version to book your Auto"
         ></Header>
-        <div class="container mt-7 space-y-4 relative">
+        <div class="container mt-7 space-y-3">
           <Input
             label="Pickup Location"
             placeholder="Enter Pickup Location"
@@ -31,16 +31,22 @@
             for="location-drop"
           ></Input>
         </div>
+        <div
+          class="container mt-4 animate__animated animate__fadeIn"
+          v-if="isLocationError"
+        >
+          <span class="text-sm text-red-400 font-semibold">{{ errorMsg }}</span>
+        </div>
         <Button
           content="Ride Now"
-          btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black mt-12 text-gray-800 w-36 shadow-md"
+          btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black mt-7  text-gray-800 w-32 shadow-md"
           iconStyle="fa-solid fa-spinner fa-spin"
           :showIcon="isFetching"
           :disabled="isFetching"
           @click="getCoordsFromLocation"
         ></Button>
       </div>
-      <div class="grid grid-rows-1 grid-cols-1 gap-y-2.5">
+      <div class="grid grid-rows-1 gap-y-2.5">
         <MarqueeBanner></MarqueeBanner>
         <Image name="bg-auto.png"></Image>
       </div>
@@ -63,6 +69,8 @@ const geoapify = store.getters.getGeoapifyData;
 const userLocationData = store.getters.getUserLocation;
 
 const isFetching = ref(false);
+const isLocationError = ref(false);
+const errorMsg = ref("");
 
 const getLocationFromCoords = async () => {
   let url = new URL(geoapify.reverseGeoCodeApi);
@@ -83,6 +91,8 @@ const getLocationFromCoords = async () => {
     let { road, city, country } = locationJson;
     store.getters.getUserLocation.pickup.text = `${road} ${city} ${country}`;
   } catch (err) {
+    isLocationError.value = true;
+    errorMsg.value = err;
     console.log(err);
   }
 };
@@ -91,6 +101,20 @@ const getCoordsFromLocation = async () => {
   isFetching.value = true;
   const pickupLocationUrl = new URL(geoapify.geocodeApi);
   const dropLocationUrl = new URL(geoapify.geocodeApi);
+
+  if (
+    userLocationData.pickup.text.length === 0 ||
+    userLocationData.drop.text.length === 0
+  ) {
+    isLocationError.value = true;
+    isFetching.value = false;
+    errorMsg.value = "Please fill in the required locations";
+    setTimeout(() => {
+      isLocationError.value = false;
+      errorMsg.value = "";
+    }, 2000);
+    return;
+  }
 
   pickupLocationUrl.searchParams.append("apiKey", geoapify.key);
   pickupLocationUrl.searchParams.append("text", userLocationData.pickup.text);
@@ -103,6 +127,10 @@ const getCoordsFromLocation = async () => {
     isFetching.value = false;
     console.log(store.getters.getUserLocation);
   } catch (err) {
+    const errData = err.response.data;
+    isLocationError.value = true;
+    isFetching.value = false;
+    errorMsg.value = "";
     console.log(err);
   }
 };
