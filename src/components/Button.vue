@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container my-auto">
     <button :class="btnStyle">
       {{ !showIcon ? content : "" }} <i :class="iconStyle" v-if="showIcon"></i>
     </button>

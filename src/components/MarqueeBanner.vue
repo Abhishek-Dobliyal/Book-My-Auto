@@ -1,6 +1,8 @@
 <template>
   <div class="container w-80 mx-auto sm:w-96">
-    <div class="relative flex overflow-x-hidden justify-center items-center">
+    <div
+      class="relative flex overflow-x-hidden justify-center items-center z-10"
+    >
       <div class="animate-marquee whitespace-nowrap">
         <span
           class="text-lg mx-2 font-bold"
@@ -27,7 +29,3 @@
     </div>
   </div>
 </template>
-
-<script setup></script>
-
-<style scoped></style>

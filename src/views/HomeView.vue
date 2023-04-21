@@ -1,7 +1,20 @@
 <template>
-  <div class="container text-center mt-5 mx-auto">
+  <div class="container text-center mt-4 mx-auto">
+    <div class="container">
+      <div
+        class="container mt-4 animate__animated animate__fadeIn"
+        v-if="hasError"
+      >
+        <Modal
+          iconStyle="fa-solid fa-circle-exclamation text-yellow-500 fa-bounce"
+          heading="Oops.. Something is not right!"
+          :message="errorMsg"
+          btnText="Got it"
+        ></Modal>
+      </div>
+    </div>
     <div
-      class="grid sm:grid-cols-2 sm:gap-x-28 gap-y-20 place-items-center place-content-center"
+      class="grid sm:grid-cols-2 sm:gap-x-28 gap-y-14 place-items-center place-content-center"
     >
       <div class="container">
         <Header
@@ -10,7 +23,7 @@
           headingText2="Web"
           subHeading="No time to try out our app? Use the web version to book your Auto"
         ></Header>
-        <div class="container mt-7 space-y-4 relative">
+        <div class="container mt-7 space-y-3">
           <Input
             label="Pickup Location"
             placeholder="Enter Pickup Location"
@@ -33,14 +46,14 @@
         </div>
         <Button
           content="Ride Now"
-          btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black mt-12 text-gray-800 w-36 shadow-md"
+          btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black mt-10  text-gray-800 w-32 shadow-md"
           iconStyle="fa-solid fa-spinner fa-spin"
           :showIcon="isFetching"
           :disabled="isFetching"
           @click="getCoordsFromLocation"
         ></Button>
       </div>
-      <div class="grid grid-rows-1 grid-cols-1 gap-y-2.5">
+      <div class="flex flex-col justify-center items-center">
         <MarqueeBanner></MarqueeBanner>
         <Image name="bg-auto.png"></Image>
       </div>
@@ -54,6 +67,7 @@ import Image from "@/components/Image.vue";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 import MarqueeBanner from "@/components/MarqueeBanner.vue";
+import Modal from "@/components/Modal.vue";
 import axios from "axios";
 import { useStore } from "vuex";
 import { ref } from "vue";
@@ -63,13 +77,27 @@ const geoapify = store.getters.getGeoapifyData;
 const userLocationData = store.getters.getUserLocation;
 
 const isFetching = ref(false);
+const hasError = ref(false);
+const errorMsg = ref("");
 
 const getLocationFromCoords = async () => {
   let url = new URL(geoapify.reverseGeoCodeApi);
   let pickupDetails = store.getters.getUserLocation.pickup;
 
   try {
-    let coords = await getCoords();
+    var coords = await getCoords();
+  } catch (err) {
+    console.log(err);
+    hasError.value = true;
+    errorMsg.value = "Could not fetch your location. Try typing it manually.";
+    setTimeout(() => {
+      hasError.value = false;
+      errorMsg.value = "";
+    }, 2500);
+    return;
+  }
+
+  try {
     url.searchParams.append("lat", coords.latitude);
     url.searchParams.append("lon", coords.longitude);
     url.searchParams.append("apiKey", geoapify.key);
@@ -83,6 +111,12 @@ const getLocationFromCoords = async () => {
     let { road, city, country } = locationJson;
     store.getters.getUserLocation.pickup.text = `${road} ${city} ${country}`;
   } catch (err) {
+    hasError.value = true;
+    errorMsg.value = "Unable to locate you. Please try after some time.";
+    setTimeout(() => {
+      hasError.value = false;
+      errorMsg.value = "";
+    }, 2500);
     console.log(err);
   }
 };
@@ -91,6 +125,20 @@ const getCoordsFromLocation = async () => {
   isFetching.value = true;
   const pickupLocationUrl = new URL(geoapify.geocodeApi);
   const dropLocationUrl = new URL(geoapify.geocodeApi);
+
+  if (
+    userLocationData.pickup.text.length === 0 ||
+    userLocationData.drop.text.length === 0
+  ) {
+    isFetching.value = false;
+    hasError.value = true;
+    errorMsg.value = "Please fill in the required locations";
+    setTimeout(() => {
+      hasError.value = false;
+      errorMsg.value = "";
+    }, 2500);
+    return;
+  }
 
   pickupLocationUrl.searchParams.append("apiKey", geoapify.key);
   pickupLocationUrl.searchParams.append("text", userLocationData.pickup.text);
@@ -103,6 +151,14 @@ const getCoordsFromLocation = async () => {
     isFetching.value = false;
     console.log(store.getters.getUserLocation);
   } catch (err) {
+    hasError.value = true;
+    isFetching.value = false;
+    errorMsg.value =
+      "Unable to contact the location services. Please try after some time.";
+    setTimeout(() => {
+      hasError.value = false;
+      errorMsg.value = "";
+    }, 2500);
     console.log(err);
   }
 };
@@ -137,6 +193,13 @@ const getCoords = () => {
         }
       );
     });
+  } else {
+    hasError.value = true;
+    errorMsg.value = "Looks like this device does not support geolocation.";
+    setTimeout(() => {
+      hasError.value = false;
+      errorMsg.value = "";
+    }, 2500);
   }
 };
 </script>
