@@ -18,7 +18,7 @@
           >
             <button
               class="mt-3 text-lg font-semibold hover:underline hover:decoration-yellow-500 hover:decoration-8"
-              @click="getLocation"
+              @click="getLocationFromCoords"
             >
               <i
                 class="fa-solid fa-location-crosshairs hover:text-yellow-500"
@@ -33,10 +33,14 @@
         </div>
         <Button
           content="Ride Now"
-          btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black hover:shadow-lg mt-12 text-gray-800"
+          btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black mt-12 text-gray-800 w-36 shadow-md"
+          iconStyle="fa-solid fa-spinner fa-spin"
+          :showIcon="isFetching"
+          :disabled="isFetching"
+          @click="getCoordsFromLocation"
         ></Button>
       </div>
-      <div class="container">
+      <div class="grid grid-rows-1 grid-cols-1 gap-y-2.5">
         <MarqueeBanner></MarqueeBanner>
         <Image name="bg-auto.png"></Image>
       </div>
@@ -52,30 +56,76 @@ import Button from "@/components/Button.vue";
 import MarqueeBanner from "@/components/MarqueeBanner.vue";
 import axios from "axios";
 import { useStore } from "vuex";
+import { ref } from "vue";
 
 const store = useStore();
-const apiKey = "e249b38d65ee4291bdee74f98aed42af";
+const geoapify = store.getters.getGeoapifyData;
+const userLocationData = store.getters.getUserLocation;
 
-const getLocation = async () => {
-  let url = new URL("https://api.geoapify.com/v1/geocode/reverse?");
+const isFetching = ref(false);
+
+const getLocationFromCoords = async () => {
+  let url = new URL(geoapify.reverseGeoCodeApi);
+  let pickupDetails = store.getters.getUserLocation.pickup;
 
   try {
     let coords = await getCoords();
     url.searchParams.append("lat", coords.latitude);
     url.searchParams.append("lon", coords.longitude);
-    url.searchParams.append("apiKey", apiKey);
+    url.searchParams.append("apiKey", geoapify.key);
+
+    pickupDetails.coords.long = coords.longitude;
+    pickupDetails.coords.lat = coords.latitude;
 
     let resp = await axios.get(url.toString());
     let data = await resp.data;
     let locationJson = data.features[0].properties;
     let { road, city, country } = locationJson;
-    store.getters.getUserLocation.pickup = `${road} ${city} ${country}`;
+    store.getters.getUserLocation.pickup.text = `${road} ${city} ${country}`;
   } catch (err) {
     console.log(err);
   }
 };
 
-const getCoords = async () => {
+const getCoordsFromLocation = async () => {
+  isFetching.value = true;
+  const pickupLocationUrl = new URL(geoapify.geocodeApi);
+  const dropLocationUrl = new URL(geoapify.geocodeApi);
+
+  pickupLocationUrl.searchParams.append("apiKey", geoapify.key);
+  pickupLocationUrl.searchParams.append("text", userLocationData.pickup.text);
+  dropLocationUrl.searchParams.append("apiKey", geoapify.key);
+  dropLocationUrl.searchParams.append("text", userLocationData.drop.text);
+
+  try {
+    await setFetchedLocation(pickupLocationUrl, "pickup");
+    await setFetchedLocation(dropLocationUrl, "drop");
+    isFetching.value = false;
+    console.log(store.getters.getUserLocation);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const setFetchedLocation = async (url, type) => {
+  const resp = await axios.get(url);
+  const data = await resp.data;
+
+  const predictedLocation = data.results.reduce((prev, curr) => {
+    return prev.rank.confidence > curr.rank.confidence ? prev : curr;
+  });
+
+  userLocationData[type].text = `${
+    predictedLocation.name ? predictedLocation.name : ""
+  } ${predictedLocation.district ? predictedLocation.district : ""} ${
+    predictedLocation.city ? predictedLocation.city : ""
+  } ${predictedLocation.country ? predictedLocation.country : ""}`;
+
+  userLocationData[type].coords.long = predictedLocation.lon;
+  userLocationData[type].coords.lat = predictedLocation.lat;
+};
+
+const getCoords = () => {
   if (navigator.geolocation) {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(

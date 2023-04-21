@@ -7,7 +7,7 @@
         <span class="text-yellow-500">{{ headingText2 }}</span>
       </div>
     </div>
-    <span class="font-semibold text-xl mx-2"> {{ subHeading }}</span>
+    <span class="font-medium text-xl mx-2"> {{ subHeading }}</span>
   </div>
 </template>
 

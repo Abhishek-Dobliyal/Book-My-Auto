@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <button :class="btnStyle">
-      {{ content }} <i :class="iconStyle" v-if="showIcon"></i>
+      {{ !showIcon ? content : "" }} <i :class="iconStyle" v-if="showIcon"></i>
     </button>
   </div>
 </template>

@@ -38,16 +38,15 @@ const storeInput = computed(() => {
   let [property, option] = props.for.split("-");
 
   if (property === "location") {
-    store.getters.getUserLocation[option] = inputData.value;
+    store.getters.getUserLocation[option].text = inputData.value;
   }
 });
 
 // watchEffect to update the input incase of value change in any of the store state property by some other component
 watchEffect(() => {
   let [property, option] = props.for.split("-");
-
   if (property === "location") {
-    inputData.value = store.getters.getUserLocation[option];
+    inputData.value = store.getters.getUserLocation[option].text;
   }
 });
 </script>

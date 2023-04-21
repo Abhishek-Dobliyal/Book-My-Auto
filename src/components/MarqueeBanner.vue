@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container w-80 mx-auto sm:w-96">
     <div class="relative flex overflow-x-hidden justify-center items-center">
       <div class="animate-marquee whitespace-nowrap">
         <span
