@@ -36,7 +36,10 @@
           btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black hover:shadow-lg mt-12 text-gray-800"
         ></Button>
       </div>
-      <Image name="bg-auto.png"></Image>
+      <div class="container">
+        <MarqueeBanner></MarqueeBanner>
+        <Image name="bg-auto.png"></Image>
+      </div>
     </div>
   </div>
 </template>
@@ -46,6 +49,7 @@ import Header from "@/components/Header.vue";
 import Image from "@/components/Image.vue";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
+import MarqueeBanner from "@/components/MarqueeBanner.vue";
 import axios from "axios";
 import { useStore } from "vuex";
 

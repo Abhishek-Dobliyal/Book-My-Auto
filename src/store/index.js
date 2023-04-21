@@ -7,14 +7,18 @@ export default createStore({
       drop: "",
     },
     dummyStats: {
-      tripsCompletes: 12032134,
-      usersRegistered: 80234,
-      driversRegistered: 56032,
+      "Trips Completed": "12,032,134",
+      "Users Registered": "80,234",
+      "Drivers Registered": "56,032",
     },
   },
   getters: {
     getUserLocation(state) {
       return state.locations;
+    },
+
+    getDummyStats(state) {
+      return state.dummyStats;
     },
   },
   mutations: {
