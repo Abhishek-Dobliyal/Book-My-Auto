@@ -44,6 +44,12 @@
             for="location-drop"
           ></Input>
         </div>
+        <div
+          class="container mt-4 animate__animated animate__fadeIn"
+          v-if="isLocationError"
+        >
+          <span class="text-sm text-red-400 font-semibold">{{ errorMsg }}</span>
+        </div>
         <Button
           content="Ride Now"
           btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black mt-10  text-gray-800 w-32 shadow-md"
