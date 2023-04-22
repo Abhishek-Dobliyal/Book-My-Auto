@@ -44,12 +44,6 @@
             for="location-drop"
           ></Input>
         </div>
-        <div
-          class="container mt-4 animate__animated animate__fadeIn"
-          v-if="isLocationError"
-        >
-          <span class="text-sm text-red-400 font-semibold">{{ errorMsg }}</span>
-        </div>
         <Button
           content="Ride Now"
           btnStyle="text-lg font-semibold px-3 py-2 bg-yellow-500 rounded-md border-black mt-10  text-gray-800 w-32 shadow-md"
@@ -77,6 +71,7 @@ import Modal from "@/components/Modal.vue";
 import axios from "axios";
 import { useStore } from "vuex";
 import { ref } from "vue";
+import router from "@/router";
 
 const store = useStore();
 const geoapify = store.getters.getGeoapifyData;
@@ -156,6 +151,7 @@ const getCoordsFromLocation = async () => {
     await setFetchedLocation(dropLocationUrl, "drop");
     isFetching.value = false;
     console.log(store.getters.getUserLocation);
+    router.push("/available-rides");
   } catch (err) {
     hasError.value = true;
     isFetching.value = false;
