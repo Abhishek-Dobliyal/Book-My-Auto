@@ -3,9 +3,9 @@
 </template>
 
 <style>
-body,
 html {
-  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
 }
 #app {
   font-family: "Montserrat", sans-serif;

@@ -3,7 +3,7 @@
     <div
       class="grid sm:grid-cols-2 sm:gap-x-28 gap-y-14 place-items-center place-content-center"
     >
-      <div class="flex flex-col mt-4 space-y-3 text-xl space-x-2 mx-2">
+      <div class="flex flex-col space-y-3 text-xl space-x-2 mx-2">
         <span
           ><span class="text-3xl font-semibold text-yellow-500">Ride </span>
           <span class="font-medium">From </span>
@@ -31,9 +31,38 @@
             >₹ {{ fare }}</span
           ></span
         >
+        <div class="flex px-2 rounded-lg py-3 mb-4">
+          <button class="hover:text-yellow-500 font-semibold">
+            <i class="fa-solid fa-arrow-left" @click="scrollLeft"></i>
+          </button>
+          <div
+            class="flex overflow-x-scroll space-x-3 w-60 mx-auto mb-3 rounded-lg"
+            ref="scrollContainer"
+          >
+            <div
+              class="flex-shrink-0"
+              v-for="stats in $store.getters.getDummyDriverStats"
+              :key="stats"
+            >
+              <DriverInfoCard
+                :name="stats.name"
+                :phone="stats.phone"
+                :rating="stats.rating"
+                :tripsCompleted="stats.tripsCompleted"
+                :rideNumber="stats.rideNumber"
+                :ask="stats.ask"
+              ></DriverInfoCard>
+            </div>
+          </div>
+          <button class="hover:text-yellow-500 font-semibold">
+            <i class="fa-solid fa-arrow-right" @click="scrollRight"></i>
+          </button>
+        </div>
       </div>
 
-      <div class="flex flex-col justify-center items-center">
+      <div
+        class="flex flex-col justify-center items-center mt-5 mb-3 mx-auto scroll-hidden"
+      >
         <LocationMap
           :pickupLong="pickupLocation.coords.long"
           :pickupLat="pickupLocation.coords.lat"
@@ -49,6 +78,7 @@
 
 <script setup>
 import LocationMap from "@/components/LocationMap.vue";
+import DriverInfoCard from "@/components/DriverInfoCard.vue";
 import Image from "@/components/Image.vue";
 import axios from "axios";
 import { onMounted, ref } from "vue";
@@ -60,10 +90,10 @@ const pickupLocation = ref(locations.pickup);
 const dropLocation = ref(locations.drop);
 const distance = ref();
 const fare = ref();
+const scrollContainer = ref();
 
 onMounted(async () => {
   const url = new URL(store.getters.getGeoapifyData.routeApi);
-  console.log(pickupLocation, dropLocation);
   url.searchParams.append(
     "waypoints",
     `${pickupLocation.value.coords.lat},${pickupLocation.value.coords.long}|${dropLocation.value.coords.lat},${dropLocation.value.coords.long}`
@@ -71,7 +101,7 @@ onMounted(async () => {
   url.searchParams.append("mode", "drive");
   url.searchParams.append("apiKey", store.getters.getGeoapifyData.key);
 
-  const resp = await axios.get(url.toString());
+  // const resp = await axios.get(url.toString());
   const data = await resp.data;
 
   const driveInfo = data.features[0].properties;
@@ -80,4 +110,28 @@ onMounted(async () => {
   const rideFare = (distanceInKm * 15).toFixed(2);
   fare.value = Number(rideFare).toLocaleString("en");
 });
+
+const scrollLeft = () => {
+  sideScroll("left", 75, 100, 35);
+};
+const scrollRight = () => {
+  sideScroll("right", 75, 100, 35);
+};
+
+const sideScroll = (direction, speed, distance, step) => {
+  let scrollAmount = 0;
+  let slideTimer = setInterval(() => {
+    if (direction === "left") {
+      scrollContainer.value.scrollLeft -= step;
+    } else {
+      scrollContainer.value.scrollLeft += step;
+    }
+    scrollAmount += step;
+    if (scrollAmount >= distance) {
+      clearInterval(slideTimer);
+    }
+  }, speed);
+};
 </script>
+
+<style scoped></style>
