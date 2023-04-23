@@ -1,6 +1,6 @@
 <template>
   <div
-    class="container w-72 h-72 border border-yellow-500 rounded-md"
+    class="container w-56 h-56 border border-yellow-500 rounded-md"
     ref="myMap"
   >
     Hello
@@ -53,6 +53,10 @@ onMounted(() => {
   const dropMarker = new L.Marker([props.dropLat, props.dropLong], {
     icon: dropMarkerIcon,
   });
+  // Display marker as per distance
+  const group = new L.featureGroup([pickupMarker, dropMarker]);
+  map.fitBounds(group.getBounds());
+  
   pickupMarker.bindPopup("You are here").openPopup();
   dropMarker.bindPopup("Drop here").openPopup();
   pickupMarker.addTo(map);
