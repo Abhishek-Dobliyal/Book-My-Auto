@@ -1,5 +1,18 @@
 <template>
-  <div class="container text-center mt-4 mx-auto">
+  <div class="container text-center mx-auto mt-10 sm:mt-5">
+    <div class="container">
+      <div
+        class="container mt-4 animate__animated animate__fadeIn"
+        v-if="hasError"
+      >
+        <Modal
+          iconStyle="fa-solid fa-circle-exclamation text-yellow-500 fa-bounce"
+          heading="Oops.. Something is not right!"
+          :message="errorMsg"
+          btnText="Got it"
+        ></Modal>
+      </div>
+    </div>
     <div
       class="grid sm:grid-cols-2 sm:gap-x-28 gap-y-14 place-items-center place-content-center"
     >
@@ -7,7 +20,7 @@
         <span
           ><span class="text-3xl font-semibold text-yellow-500">Ride </span>
           <span class="font-medium">From </span>
-          <span class="italic font-semibold">{{
+          <span class="italic font-semibold truncate">{{
             $store.getters.getUserLocation.pickup.text
           }}</span>
         </span>
@@ -61,7 +74,7 @@
       </div>
 
       <div
-        class="flex flex-col justify-center items-center mt-5 mb-3 mx-auto scroll-hidden"
+        class="flex flex-col justify-center items-center mt-5 mb-3 mx-auto scroll-hidden relative z-0"
       >
         <LocationMap
           :pickupLong="pickupLocation.coords.long"
@@ -79,6 +92,7 @@
 <script setup>
 import LocationMap from "@/components/LocationMap.vue";
 import DriverInfoCard from "@/components/DriverInfoCard.vue";
+import Modal from "@/components/Modal.vue";
 import Image from "@/components/Image.vue";
 import axios from "axios";
 import { onMounted, ref } from "vue";
@@ -91,6 +105,8 @@ const dropLocation = ref(locations.drop);
 const distance = ref();
 const fare = ref();
 const scrollContainer = ref();
+const hasError = ref(false);
+const errorMsg = ref("");
 
 onMounted(async () => {
   const url = new URL(store.getters.getGeoapifyData.routeApi);
@@ -101,21 +117,29 @@ onMounted(async () => {
   url.searchParams.append("mode", "drive");
   url.searchParams.append("apiKey", store.getters.getGeoapifyData.key);
 
-  // const resp = await axios.get(url.toString());
-  const data = await resp.data;
+  try {
+    // const resp = await axios.get(url.toString());
+    // const data = await resp.data;
 
-  const driveInfo = data.features[0].properties;
-  const distanceInKm = (driveInfo.distance / 1000).toFixed(2);
-  distance.value = Number(distanceInKm).toLocaleString("en");
-  const rideFare = (distanceInKm * 15).toFixed(2);
-  fare.value = Number(rideFare).toLocaleString("en");
+    const driveInfo = data.features[0].properties;
+    const distanceInKm = (driveInfo.distance / 1000).toFixed(2);
+    distance.value = Number(distanceInKm).toLocaleString("en");
+    const rideFare = (distanceInKm * 15).toFixed(2);
+    fare.value = Number(rideFare).toLocaleString("en");
+  } catch (err) {
+    distance.value = "N/A";
+    fare.value = "N/A";
+    hasError.value = true;
+    errorMsg.value = "Something went wrong fetching trip details";
+    console.log(err);
+  }
 });
 
 const scrollLeft = () => {
-  sideScroll("left", 75, 100, 35);
+  sideScroll("left", 120, 255, 50);
 };
 const scrollRight = () => {
-  sideScroll("right", 75, 100, 35);
+  sideScroll("right", 120, 255, 50);
 };
 
 const sideScroll = (direction, speed, distance, step) => {

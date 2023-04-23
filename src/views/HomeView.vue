@@ -1,5 +1,5 @@
 <template>
-  <div class="container text-center mt-4 mx-auto">
+  <div class="container text-center mt-4 mx-auto overflow-hidden">
     <div class="container">
       <div
         class="container mt-4 animate__animated animate__fadeIn"

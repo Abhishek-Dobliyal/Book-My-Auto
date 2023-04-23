@@ -1,5 +1,5 @@
 <template>
-  <div class="container w-80 mx-auto sm:w-96">
+  <div class="container w-80 mx-auto sm:w-96 relative -z-10">
     <div
       class="relative flex overflow-x-hidden justify-center items-center z-10"
     >
