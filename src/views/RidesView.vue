@@ -1,5 +1,5 @@
 <template>
-  <div class="container text-center mx-auto mt-10 sm:mt-5">
+  <div class="container text-center mx-auto mt-10 sm:mt-5 overflow-hidden">
     <div class="container">
       <div
         class="container mt-4 animate__animated animate__fadeIn"
@@ -20,7 +20,7 @@
         <span
           ><span class="text-3xl font-semibold text-yellow-500">Ride </span>
           <span class="font-medium">From </span>
-          <span class="italic font-semibold truncate">{{
+          <span class="italic font-semibold">{{
             $store.getters.getUserLocation.pickup.text
           }}</span>
         </span>
@@ -76,13 +76,7 @@
       <div
         class="flex flex-col justify-center items-center mt-5 mb-3 mx-auto scroll-hidden relative z-0"
       >
-        <LocationMap
-          :pickupLong="pickupLocation.coords.long"
-          :pickupLat="pickupLocation.coords.lat"
-          :dropLong="dropLocation.coords.long"
-          :dropLat="dropLocation.coords.lat"
-        ></LocationMap>
-
+        <LocationMap :routeCoords="routeCoords"></LocationMap>
         <Image name="bg-ride.png"></Image>
       </div>
     </div>
@@ -107,6 +101,7 @@ const fare = ref();
 const scrollContainer = ref();
 const hasError = ref(false);
 const errorMsg = ref("");
+const routeCoords = ref([]);
 
 onMounted(async () => {
   const url = new URL(store.getters.getGeoapifyData.routeApi);
@@ -118,9 +113,11 @@ onMounted(async () => {
   url.searchParams.append("apiKey", store.getters.getGeoapifyData.key);
 
   try {
-    // const resp = await axios.get(url.toString());
-    // const data = await resp.data;
+    console.log(url.toString());
+    const resp = await axios.get(url.toString());
+    const data = await resp.data;
 
+    routeCoords.value = data.features[0].geometry.coordinates[0];
     const driveInfo = data.features[0].properties;
     const distanceInKm = (driveInfo.distance / 1000).toFixed(2);
     distance.value = Number(distanceInKm).toLocaleString("en");

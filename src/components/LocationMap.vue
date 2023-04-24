@@ -7,19 +7,16 @@ import L from "leaflet";
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
 
-const props = defineProps({
-  pickupLong: Number,
-  pickupLat: Number,
-  dropLong: Number,
-  dropLat: Number,
-});
 const store = useStore();
 const myMap = ref();
+const locations = store.getters.getUserLocation;
+const pickupLocation = locations.pickup;
+const dropLocation = locations.drop;
 
 onMounted(() => {
   const initialState = {
-    lng: props.pickupLong,
-    lat: props.pickupLat,
+    lng: pickupLocation.coords.long,
+    lat: pickupLocation.coords.lat,
     zoom: 5,
   };
 
@@ -28,10 +25,12 @@ onMounted(() => {
     initialState.zoom
   );
 
+  // Choose URL link base on device display
   const isRetina = L.Browser.retina;
   const baseUrl = `https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${store.getters.getGeoapifyData.key}`;
   const retinaUrl = `https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}@2x.png?apiKey=${store.getters.getGeoapifyData.key}`;
 
+  // Marker option for both pickup & drop location
   const pickupMarkerIconOpts = {
     iconUrl: require("../assets/marker.png"),
     iconSize: [25, 25],
@@ -42,12 +41,18 @@ onMounted(() => {
   };
   const pickupMarkerIcon = L.icon(pickupMarkerIconOpts);
   const dropMarkerIcon = L.icon(dropMarkerIconOpts);
-  const pickupMarker = new L.Marker([props.pickupLat, props.pickupLong], {
-    icon: pickupMarkerIcon,
-  });
-  const dropMarker = new L.Marker([props.dropLat, props.dropLong], {
-    icon: dropMarkerIcon,
-  });
+  const pickupMarker = new L.Marker(
+    [pickupLocation.coords.lat, pickupLocation.coords.long],
+    {
+      icon: pickupMarkerIcon,
+    }
+  );
+  const dropMarker = new L.Marker(
+    [dropLocation.coords.lat, dropLocation.coords.long],
+    {
+      icon: dropMarkerIcon,
+    }
+  );
   // Display marker as per distance
   const group = new L.featureGroup([pickupMarker, dropMarker]);
   map.fitBounds(group.getBounds());
