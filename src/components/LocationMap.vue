@@ -1,5 +1,5 @@
 <template>
-  <div class="container w-96 h-72 mx-10 rounded-md shadow-md" ref="myMap"></div>
+  <div class="container w-80 h-72 mx-10 rounded-md shadow-md" ref="myMap"></div>
 </template>
 
 <script setup>

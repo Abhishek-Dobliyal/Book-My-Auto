@@ -76,15 +76,15 @@
       </div>
 
       <div
-        class="flex flex-col justify-center items-center mt-5 mx-auto scroll-hidden space-y-3 mb-10"
+        class="flex flex-col justify-center items-center mt-4 scroll-hidden space-y-3 mb-10"
       >
-        <div class="container">
-          <span class="text-2xl"
-            ><span class="text-3xl text-yellow-500 font-semibold"> Route</span>
-            Map</span
-          >
-        </div>
+        <span class="text-2xl mb-3"
+          ><span class="text-3xl text-yellow-500 font-semibold"> Route</span>
+          Map</span
+        >
+        <hr />
         <LocationMap></LocationMap>
+        <hr />
         <Image name="bg-ride.png"></Image>
       </div>
     </div>
@@ -162,4 +162,15 @@ const sideScroll = (direction, speed, distance, step) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+hr {
+  width: 80%;
+  height: 3px;
+  border: 0 none;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 80px;
+  margin-bottom: 90px;
+  background-color: #555;
+}
+</style>
