@@ -1,5 +1,5 @@
 <template>
-  <div class="container text-center mx-auto mt-10 sm:mt-5">
+  <div class="container text-center mx-auto mt-10 sm:mt-5 overflow-hidden">
     <div class="container">
       <div
         class="container mt-4 animate__animated animate__fadeIn"
@@ -16,11 +16,13 @@
     <div
       class="grid sm:grid-cols-2 sm:gap-x-28 gap-y-14 place-items-center place-content-center"
     >
-      <div class="flex flex-col space-y-3 text-xl space-x-2 mx-2">
-        <span
+      <div
+        class="flex flex-col space-y-3 text-xl space-x-2 mx-10 sm:mx-3 text-center"
+      >
+        <span class="text-ellipsis"
           ><span class="text-3xl font-semibold text-yellow-500">Ride </span>
           <span class="font-medium">From </span>
-          <span class="italic font-semibold truncate">{{
+          <span class="italic font-semibold">{{
             $store.getters.getUserLocation.pickup.text
           }}</span>
         </span>
@@ -44,7 +46,7 @@
             >₹ {{ fare }}</span
           ></span
         >
-        <div class="flex px-2 rounded-lg py-3 mb-4">
+        <div class="flex px-2 rounded-lg py-3 mb-4 items-center justify-center">
           <button class="hover:text-yellow-500 font-semibold">
             <i class="fa-solid fa-arrow-left" @click="scrollLeft"></i>
           </button>
@@ -74,15 +76,15 @@
       </div>
 
       <div
-        class="flex flex-col justify-center items-center mt-5 mb-3 mx-auto scroll-hidden relative z-0"
+        class="flex flex-col justify-center items-center mt-5 mx-auto scroll-hidden space-y-3 mb-10"
       >
-        <LocationMap
-          :pickupLong="pickupLocation.coords.long"
-          :pickupLat="pickupLocation.coords.lat"
-          :dropLong="dropLocation.coords.long"
-          :dropLat="dropLocation.coords.lat"
-        ></LocationMap>
-
+        <div class="container">
+          <span class="text-2xl"
+            ><span class="text-3xl text-yellow-500 font-semibold"> Route</span>
+            Map</span
+          >
+        </div>
+        <LocationMap></LocationMap>
         <Image name="bg-ride.png"></Image>
       </div>
     </div>
@@ -118,8 +120,8 @@ onMounted(async () => {
   url.searchParams.append("apiKey", store.getters.getGeoapifyData.key);
 
   try {
-    // const resp = await axios.get(url.toString());
-    // const data = await resp.data;
+    const resp = await axios.get(url.toString());
+    const data = await resp.data;
 
     const driveInfo = data.features[0].properties;
     const distanceInKm = (driveInfo.distance / 1000).toFixed(2);
@@ -136,10 +138,10 @@ onMounted(async () => {
 });
 
 const scrollLeft = () => {
-  sideScroll("left", 120, 255, 50);
+  sideScroll("left", 90, 220, 50);
 };
 const scrollRight = () => {
-  sideScroll("right", 120, 255, 50);
+  sideScroll("right", 90, 220, 50);
 };
 
 const sideScroll = (direction, speed, distance, step) => {

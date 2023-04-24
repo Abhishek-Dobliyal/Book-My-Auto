@@ -24,7 +24,7 @@ export default createStore({
         rating: 4.5,
         tripsCompleted: 340,
         rideNumber: "KA XJASH123",
-        ask: "3,500",
+        ask: "300",
       },
       1: {
         name: "Rahul Shetty",
@@ -32,7 +32,7 @@ export default createStore({
         rating: 4.8,
         tripsCompleted: 502,
         rideNumber: "KA XJ12SH67F",
-        ask: "3,550",
+        ask: "285",
       },
       2: {
         name: "Boyilla Srinivas",
@@ -40,7 +40,7 @@ export default createStore({
         rating: 4.9,
         tripsCompleted: 424,
         rideNumber: "KA GHIEQ5623",
-        ask: "3,750",
+        ask: "250",
       },
       3: {
         name: "Vinay Kumar",
@@ -48,7 +48,7 @@ export default createStore({
         rating: 4.7,
         tripsCompleted: 450,
         rideNumber: "KA KYU328HSAM",
-        ask: "3,700",
+        ask: "350",
       },
     },
     geoapify: {
