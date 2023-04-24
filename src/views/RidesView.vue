@@ -109,6 +109,7 @@ const fare = ref();
 const scrollContainer = ref();
 const hasError = ref(false);
 const errorMsg = ref("");
+const routeCoords = ref([]);
 
 onMounted(async () => {
   const url = new URL(store.getters.getGeoapifyData.routeApi);
@@ -123,6 +124,7 @@ onMounted(async () => {
     const resp = await axios.get(url.toString());
     const data = await resp.data;
 
+    routeCoords.value = data.features[0].geometry.coordinates[0];
     const driveInfo = data.features[0].properties;
     const distanceInKm = (driveInfo.distance / 1000).toFixed(2);
     distance.value = Number(distanceInKm).toLocaleString("en");
