@@ -1,4 +1,12 @@
-# book-my-auto
+# Book-My-Auto
+Part of Namma Yatri Open Mobility Challenge.
+
+## Installation & Dependencies
+
+- [NodeJS](https://nodejs.org/en)
+- [VueJS](https://vuejs.org/)
+- [GeoApify API Key](https://www.geoapify.com/)
+
 
 ## Project setup
 ```
