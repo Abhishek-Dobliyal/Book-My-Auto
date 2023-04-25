@@ -47,3 +47,4 @@ npm run serve
 - [ ] Add real-time location
 - [ ] Location Auto complete
 - [ ] User authorization
+- [ ] Improve styling
