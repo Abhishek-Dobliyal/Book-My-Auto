@@ -53,7 +53,9 @@
           @click="getCoordsFromLocation"
         ></Button>
       </div>
-      <div class="flex flex-col justify-center items-center">
+      <div
+        class="flex flex-col justify-center items-center animate__animated animate__slideInUp"
+      >
         <MarqueeBanner></MarqueeBanner>
         <Image name="bg-auto.png"></Image>
       </div>

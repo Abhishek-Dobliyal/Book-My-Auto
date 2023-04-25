@@ -76,7 +76,7 @@
       </div>
 
       <div
-        class="flex flex-col justify-center items-center mt-4 scroll-hidden space-y-3 mb-10"
+        class="flex flex-col justify-center items-center mt-4 scroll-hidden space-y-3 mb-10 animate__animated animate__slideInUp"
       >
         <span class="text-2xl mb-3"
           ><span class="text-3xl text-yellow-500 font-semibold"> Route</span>
