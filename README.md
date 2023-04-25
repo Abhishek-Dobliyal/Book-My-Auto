@@ -1,6 +1,13 @@
 ## Book-My-Auto
 Part of Namma Yatri Open Mobility Challenge.
 
+
+### Screenshots
+
+Home Page                  |   Rides Page              |         Route Map
+:-------------------------:|:-------------------------:|:-------------------------:
+![](screenshots/s1.png)    |  ![](screenshots/s2.png)  |     ![](screenshots/s3.png)
+ 
 ### Installation & Dependencies
 
 - [NodeJS](https://nodejs.org/en)
