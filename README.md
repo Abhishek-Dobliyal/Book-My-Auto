@@ -42,7 +42,7 @@ npm run serve
   - Network: http://192.168.134.61:8080/
 ```
 
-> Note: Do not forget to plug-in your API key inside `(src/store/index.js` store object.
+> Note: Do not forget to plug-in your API key inside `src/store/index.js` store object.
 
 ### To-Do
 
