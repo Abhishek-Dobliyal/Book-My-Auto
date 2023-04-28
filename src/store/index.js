@@ -52,7 +52,7 @@ export default createStore({
       },
     },
     geoapify: {
-      key: "YOUR-API",
+      key: "e249b38d65ee4291bdee74f98aed42af",
       reverseGeoCodeApi: "https://api.geoapify.com/v1/geocode/reverse?",
       geocodeApi:
         "https://api.geoapify.com/v1/geocode/search?format=json&country=india",
