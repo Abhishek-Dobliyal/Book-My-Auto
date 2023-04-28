@@ -1,5 +1,9 @@
 <template>
-  <div class="container text-center mt-4 mx-auto overflow-hidden">
+  <Spinner v-if="isMounting"></Spinner>
+  <div
+    class="container text-center mt-4 mx-auto overflow-hidden animate__animated animate__fadeIn"
+    v-else
+  >
     <div class="container">
       <div
         class="container mt-4 animate__animated animate__fadeIn"
@@ -70,9 +74,10 @@ import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 import MarqueeBanner from "@/components/MarqueeBanner.vue";
 import Modal from "@/components/Modal.vue";
+import Spinner from "@/components/Spinner.vue";
 import axios from "axios";
 import { useStore } from "vuex";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import router from "@/router";
 
 const store = useStore();
@@ -82,6 +87,11 @@ const userLocationData = store.getters.getUserLocation;
 const isFetching = ref(false);
 const hasError = ref(false);
 const errorMsg = ref("");
+const isMounting = ref(true);
+
+onMounted(() => {
+  isMounting.value = false;
+});
 
 const getLocationFromCoords = async () => {
   let url = new URL(geoapify.reverseGeoCodeApi);

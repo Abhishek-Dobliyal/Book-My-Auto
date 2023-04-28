@@ -1,5 +1,9 @@
 <template>
-  <div class="container text-center mx-auto mt-10 sm:mt-5 overflow-hidden">
+  <Spinner v-if="isMounting"></Spinner>
+  <div
+    class="container text-center mx-auto mt-10 sm:mt-5 overflow-hidden"
+    v-else
+  >
     <div class="container">
       <div
         class="container mt-4 animate__animated animate__fadeIn"
@@ -94,6 +98,7 @@
 <script setup>
 import LocationMap from "@/components/LocationMap.vue";
 import DriverInfoCard from "@/components/DriverInfoCard.vue";
+import Spinner from "@/components/Spinner.vue";
 import Modal from "@/components/Modal.vue";
 import Image from "@/components/Image.vue";
 import axios from "axios";
@@ -106,10 +111,12 @@ const pickupLocation = ref(locations.pickup);
 const dropLocation = ref(locations.drop);
 const distance = ref();
 const fare = ref();
+
 const scrollContainer = ref();
 const hasError = ref(false);
 const errorMsg = ref("");
 const routeCoords = ref([]);
+const isMounting = ref(true);
 
 onMounted(async () => {
   const url = new URL(store.getters.getGeoapifyData.routeApi);
@@ -137,6 +144,8 @@ onMounted(async () => {
     errorMsg.value = "Something went wrong fetching trip details";
     console.log(err);
   }
+
+  isMounting.value = false;
 });
 
 const scrollLeft = () => {
